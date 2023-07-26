@@ -20,7 +20,7 @@
     display: none;
     box-shadow: 0 px rgba(0, 0, 0, 0.2);
     padding: 10px;
-    list-style-type: none; /* 添加此行代码 */
+    list-style-type: none; /* 脤铆录脫麓脣脨脨麓煤脗毛 */
 }
 
     #search-results li {
@@ -51,6 +51,8 @@ p.center {
 a.center {
     text-align: center;
 }
+p.bl{
+    color:black;
 
 h1 {
     color: black;
