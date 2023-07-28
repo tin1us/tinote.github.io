@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>你竟然发现了彩蛋！太厉害了！</title>
+  <style>
+    #game-board {
+      position: relative;
+      width: 1080px;
+      height: 720px;
+      border: 1px solid black;
+    }
+
+    .snake {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: green;
+    }
+
+    .food {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: red;
+    }
+
+    #controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    
+    .control-button {
+      font-size: 24px;
+      width: 50px;
+      height: 50px;
+      margin: 0 5px;
+    }
+
+    #start-button {
+      font-size: 24px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-board">
+    <div class="snake"></div>
+    <div class="food"></div>
+  
+    <div id="controls">
+      <button class="control-button" onclick="changeDirection('up')">↑</button>
+      <br />
+      <button class="control-button" onclick="changeDirection('left')">←</button>
+      <button class="control-button" onclick="changeDirection('right')">→</button>
+      <br />
+      <button class="control-button" onclick="changeDirection('down')">↓</button>
+    </div>
+
+    <button id="start-button" onclick="startGame()">开始</button>
+  </div>
+
+  <script>
+    var snake = [{ x: 0, y: 0 }];
+    var direction = "right";
+    var food = { x: 0, y: 0 };
+    var gameBoard = document.getElementById("game-board");
+    var snakeBody = document.getElementsByClassName("snake")[0];
+    var foodElem = document.getElementsByClassName("food")[0];
+    var startButton = document.getElementById("start-button");
+    var intervalId;
+
+    function startGame() {
+      startButton.disabled = true;
+      generateFood();
+      intervalId = setInterval(moveSnake, 250);
+    }
+
+    function moveSnake() {
+      var head = { x: snake[0].x, y: snake[0].y };
+
+      if (direction === "up") {
+        head.y -= 20;
+      } else if (direction === "down") {
+        head.y += 20;
+      } else if (direction === "left") {
+        head.x -= 20;
+      } else if (direction === "right") {
+        head.x += 20;
+      }
+
+      snake.unshift(head);
+
+      if (head.x === food.x && head.y === food.y) {
+        generateFood();
+      } else {
+        snake.pop();
+      }
+
+      updateSnake();
+      checkCollision();
+    }
+
+    function updateSnake() {
+      snakeBody.innerHTML = "";
+      snake.forEach(function(segment, index) {
+        var segmentElem = document.createElement("div");
+        segmentElem.style.left = segment.x + "px";
+        segmentElem.style.top = segment.y + "px";
+        segmentElem.classList.add("snake");
+        snakeBody.appendChild(segmentElem);
+      });
+    }
+
+    function checkCollision() {
+      var head = snake[0];
+
+      if (
+        head.x < 0 ||
+        head.y < 0 ||
+        head.x >= gameBoard.offsetWidth ||
+        head.y >= gameBoard.offsetHeight
+      ) {
+        gameOver();
+      }
+
+      for (var i = 1; i < snake.length; i++) {
+        if (head.x === snake[i].x && head.y === snake[i].y) {
+          gameOver();
+        }
+      }
+    }
+
+    function gameOver() {
+      clearInterval(intervalId);
+      alert("游戏结束");
+      snake = [{ x: 0, y: 0 }];
+      direction = "right";
+      startButton.disabled = false;
+    }
+
+    function generateFood() {
+      var maxX = gameBoard.offsetWidth / 20;
+      var maxY = gameBoard.offsetHeight / 20;
+
+      food.x = Math.floor(Math.random() * maxX) * 20;
+      food.y = Math.floor(Math.random() * maxY) * 20;
+
+      foodElem.style.left = food.x + "px";
+      foodElem.style.top = food.y + "px";
+    }
+
+    function changeDirection(newDirection) {
+      direction = newDirection;
+    }
+  </script>
+</body>
+</html>
